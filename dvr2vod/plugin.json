@@ -2,7 +2,7 @@
   "name": "DVR2VOD",
   "version": "0.1.0",
   "description": "Publishes completed DVR recordings as a VOD-style M3U playlist so they play in TiviMate and other clients, grouped per show or as flat movies. Points at Dispatcharr's own recording file endpoint - no core modification, no files moved.",
-  "author": "REPLACE_WITH_GITHUB_USERNAME",
+  "author": "Rayplsrelax",
   "license": "MIT",
   "min_dispatcharr_version": "v0.20.0",
   "fields": [
