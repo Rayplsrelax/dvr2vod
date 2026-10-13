@@ -1,0 +1,112 @@
+{
+  "name": "DVR2VOD",
+  "version": "0.1.0",
+  "description": "Publishes completed DVR recordings as a VOD-style M3U playlist so they play in TiviMate and other clients, grouped per show or as flat movies. Points at Dispatcharr's own recording file endpoint - no core modification, no files moved.",
+  "author": "REPLACE_WITH_GITHUB_USERNAME",
+  "license": "MIT",
+  "min_dispatcharr_version": "v0.20.0",
+  "fields": [
+    {
+      "id": "_section_library",
+      "label": "[LIBRARY]",
+      "type": "info",
+      "description": "How completed recordings are presented in the generated playlist. Regenerated automatically when a recording finishes, and manually from the buttons below."
+    },
+    {
+      "id": "library_mode",
+      "label": "Library layout",
+      "type": "select",
+      "default": "series_per_show",
+      "options": [
+        {
+          "value": "series_per_show",
+          "label": "One group per show (recommended)"
+        },
+        {
+          "value": "flat_movies",
+          "label": "Flat - one group for everything"
+        }
+      ],
+      "help_text": "series_per_show groups recordings by detected show name (each show becomes its own group-title, like season folders). flat_movies puts every recording in the single group below."
+    },
+    {
+      "id": "group_title",
+      "label": "Group name (flat mode)",
+      "type": "string",
+      "default": "DVR Recordings",
+      "help_text": "Only used in flat mode."
+    },
+    {
+      "id": "_section_url",
+      "label": "[PLAYBACK URL]",
+      "type": "info",
+      "description": "The playlist links to Dispatcharr's recording file endpoint, so entries need a base URL your client can reach, plus a token that endpoint accepts."
+    },
+    {
+      "id": "base_url",
+      "label": "Dispatcharr base URL",
+      "type": "string",
+      "default": "",
+      "placeholder": "http://192.168.1.94:9191",
+      "help_text": "Must be reachable from the DEVICE playing the video, not just from Dispatcharr itself - a LAN IP or hostname, never 'localhost'. Leave empty to derive from Django's allowed hosts at generate time (best effort)."
+    },
+    {
+      "id": "auth_token",
+      "label": "Access token for recording playback",
+      "type": "string",
+      "default": "",
+      "help_text": "The recording file endpoint requires authentication: a JWT, an API key header, or a ?token= query parameter. Put the token value here; it is appended to every entry URL and is never written to the logs."
+    },
+    {
+      "id": "_section_output",
+      "label": "[OUTPUT]",
+      "type": "info",
+      "description": "Where the generated playlist file is written inside the Dispatcharr container."
+    },
+    {
+      "id": "output_path",
+      "label": "Playlist output path",
+      "type": "string",
+      "default": "",
+      "help_text": "Empty (default) writes recordings.m3u into this plugin's own data folder, which survives plugin updates. Set an absolute path (e.g. /data/recordings.m3u) to write elsewhere, e.g. a mount your clients can fetch from."
+    },
+    {
+      "id": "auto_regenerate",
+      "label": "Regenerate automatically when a recording ends",
+      "type": "boolean",
+      "default": true,
+      "help_text": "ON: every completed recording triggers a playlist rebuild in a background thread. The recording endpoint only needs the recording row, not the remuxed file, so the playlist may briefly include an entry a second before its file is final."
+    }
+  ],
+  "actions": [
+    {
+      "id": "preview",
+      "label": "Preview library (no file written)",
+      "description": "Shows how many completed recordings were found and the first entries exactly as they would appear in the playlist.",
+      "button_label": "Preview",
+      "button_variant": "outline"
+    },
+    {
+      "id": "generate_m3u",
+      "label": "Generate playlist",
+      "description": "Builds and writes recordings.m3u from all completed recordings.",
+      "button_label": "Generate",
+      "button_variant": "filled",
+      "button_color": "green"
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "description": "Completed recording count, output path, and when the playlist was last generated.",
+      "button_label": "Status",
+      "button_variant": "outline",
+      "button_color": "blue"
+    },
+    {
+      "id": "on_recording_end",
+      "label": "Handle recording_end",
+      "description": "Internal. Fires automatically when a recording finishes.",
+      "events": ["recording_end"]
+    }
+  ]
+}

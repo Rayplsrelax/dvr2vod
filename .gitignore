@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+dvr2vod_data/
+*.egg-info/
